@@ -6,3 +6,36 @@
 .App > div {
   margin-right: 50px;
 }
+
+.todolist {
+  border: 2px solid lightblue;
+  padding: 15px;
+  background-color: darkgrey;
+  border-radius: 20px;
+
+}
+.todolist span {
+  margin-right: 5px;
+}
+
+.error {
+  border: 1px solid red;
+}
+
+.error-message {
+  color: red;
+}
+
+.active-button {
+  color: cadetblue;
+  background-color: darkslategrey;
+}
+
+.finished-task {
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+
+.inline-text {
+  display: inline-block;
+}
