@@ -1,9 +1,12 @@
-import React, {useState} from "react";
+import React from "react";
 
-import {Button} from "../button/Button";
+
 import {FilterType} from "../FilterType";
-import {Input} from "../input/Input";
 import {InputForm} from "../input_button-form/InputForm";
+import {EditableSpan} from "./EditableSpan";
+import {Button, IconButton} from "@mui/material";
+import {Delete} from "@mui/icons-material";
+import {SuperCheckBox} from "./SuperCheckBox";
 
 export type TaskType = {
     id: string;
@@ -14,11 +17,13 @@ type TodolistType = {
     todolistTitle: string;
     todolistID: string;
     tasks: Array<TaskType>;
-    deleteTask: (taskID: string, id: string) => void
-    changeFilter: (newFilter: FilterType, id: string) => void
-    clearAllTasks: (id: string) => void
+    deleteTask: (taskID: string, todolistID: string) => void
+    changeFilter: (newFilter: FilterType, todolistID: string) => void
+    clearAllTasks: (todolistID: string) => void
     addTask: (newTitle: string, todolistID: string) => void
-    changeCheckbox: (taskId: string, id: string) => void
+    changeCheckbox: (taskId: string, todolistID: string) => void
+    changeTaskTitle: (newTitle: string, taskID: string, todolistID: string) => void;
+    changeTodolistTitle: (newTitle: string,todolistID: string) => void
     filter: FilterType;
     deleteTodolist: (todolistID: string) => void
 }
@@ -33,6 +38,8 @@ export const Todolist: React.FC<TodolistType> = ({
                                                      clearAllTasks,
                                                      addTask,
                                                      changeCheckbox,
+                                                     changeTaskTitle,
+                                                     changeTodolistTitle,
                                                      filter,
                                                      deleteTodolist,
                                                  }) => {
@@ -59,10 +66,20 @@ export const Todolist: React.FC<TodolistType> = ({
             deleteTodolist(todolistID)
         }
 
+
+    const onChangeTodolistTitleHandler = (newTitle: string)=> {
+        changeTodolistTitle(newTitle, todolistID)
+    }
+    const changeCheckboxHandler = (taskID: string) => {
+        changeCheckbox(taskID,todolistID)
+    }
         return <>
             <div className={'todolist'}>
-                <h3 className={'inline-text'}>{todolistTitle}</h3>
-                <Button name={'X'} callback={deleteTodolistHandler} className={''}/>
+                <h3 className={'inline-text'}><EditableSpan title={todolistTitle} className={''} onChangeTitle={onChangeTodolistTitleHandler}/></h3>
+
+                <IconButton onClick={deleteTodolistHandler}>
+                    <Delete/>
+                </IconButton>
 
                 <div>
 
@@ -77,26 +94,35 @@ export const Todolist: React.FC<TodolistType> = ({
                         const onChangeCheckboxHandler = (taskID: string) => {
                             changeCheckbox(taskID, todolistID)
                         }
+                        const onChangeTaskTitleHandler = (newTitle: string) => {
+                           changeTaskTitle(newTitle, task.id,  todolistID)
+                        }
 
-                        return <li key={task.id}><input type="checkbox" checked={task.isDone}
-                                                        onChange={() => onChangeCheckboxHandler(task.id)}/>
-                            <span className={task.isDone ? 'finished-task' : ''}>{task.title}</span>
-                            <Button name={'✖️'} callback={callbackHandler} className={''}/>
+                        return <li key={task.id}>
+                            {/*<input type="checkbox" checked={task.isDone}*/}
+                            {/*                            onChange={() => onChangeCheckboxHandler(task.id)}/>*/}
+                            <SuperCheckBox isDone={task.isDone} callback={()=>changeCheckboxHandler(task.id)}/>
+                            <EditableSpan title={task.title}
+                                          className={task.isDone ? 'finished-task' : ''}
+                                            onChangeTitle={onChangeTaskTitleHandler}/>
+
+                            <IconButton onClick={callbackHandler}>
+                                <Delete/>
+                            </IconButton>
+
 
                         </li>
                     })}
                 </ul>
                 <div>
-                    <Button name={'All'} callback={filterAllHandler}
-                            className={filter === 'All' ? 'active-button' : ''}/>
-                    <Button name={'Active'} callback={filterActiveHandler}
-                            className={filter === 'Active' ? 'active-button' : ''}/>
-                    <Button name={'Completed'} callback={filterCompletedHandler}
-                            className={filter === 'Completed' ? 'active-button' : ''}/>
-                    <Button name={'Clear'} callback={filterClearHandler}
-                            className={filter === 'Clear' ? 'active-button' : ''}/>
+                    <Button onClick={filterAllHandler} variant={filter === 'All' ? 'contained' : 'text'}>All</Button>
+                    <Button  onClick={filterActiveHandler} variant={filter === 'Active' ? 'contained' : 'text'}>Active</Button>
+                    <Button onClick={filterCompletedHandler} variant={filter === 'Completed' ? 'contained' : 'text'}>Completed</Button>
+                    <Button color={"error"}    onClick={filterClearHandler} variant={filter === 'Clear' ? 'contained' : 'text'}>Clear</Button>
+
 
                 </div>
             </div>
         </>
     }
+

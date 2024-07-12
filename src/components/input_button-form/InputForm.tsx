@@ -1,4 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import {IconButton, Input, TextField} from "@mui/material";
+import {AddCircleOutlineOutlined} from "@mui/icons-material";
 
 
 type InputFormTypes = {
@@ -25,7 +27,7 @@ export const InputForm: React.FC<InputFormTypes> = ({
         setError('')
     }
     const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setTitle (event.currentTarget.value)
+        setTitle(event.currentTarget.value)
 
 
     }
@@ -35,8 +37,18 @@ export const InputForm: React.FC<InputFormTypes> = ({
 
     }
     return <>
-        <input onChange={onChangeHandler} onKeyDown={onKeyDownHandler}  value={title} className={error ? 'error' : ''}/>
-        <button onClick={onClickHandler}>+</button>
-        <div className={error ? 'error-message' : ''}>{error}</div>
+
+        <TextField onChange={onChangeHandler}
+                   onKeyDown={onKeyDownHandler}
+                   value={title} variant={"outlined"}
+                   label={'Enter the title'}
+                   color={'primary'}
+                   error={!!error}
+                   helperText={error}
+                   size={"small"}/>
+        <IconButton onClick={onClickHandler} color={'primary'}>
+            <AddCircleOutlineOutlined/>
+        </IconButton>
+
     </>
 }
